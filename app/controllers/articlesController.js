@@ -54,13 +54,14 @@ exports.create_article = function(req, res) {
 };
 
 exports.get_articles_by_tag = function(req, res) {
-    if(!req.body.tags || req.body.tags.length == 0) {
+    var params = [req.params.tags].concat(req.params[0].split('/').slice(1));
+    if(!params || params.length == 0) {
         return res.status(400).send({
             message: "Tags can not be empty."
         });
       }
     
-    article.find({ tags: { $all: req.body.tags } }).exec()
+    article.find({ tags: { $all: params } }).exec()
     .then(articles => {
         res.send(articles);
       }).catch(err => {
@@ -68,4 +69,41 @@ exports.get_articles_by_tag = function(req, res) {
             message: err.message || "Some error occurred while searching for articles."
         });
       });
+};
+
+exports.update_article = function(req, res) {
+    if(!req.params.articleId) {
+        return res.status(400).send({
+            message: "Article id can not by empty"
+        });
+      }
+
+      if(!req.body.title) {
+        return res.status(400).send({
+            message: "Article title can not be empty"
+        });
+      }
+    
+      if(!req.body.userId) {
+        return res.status(400).send({
+            message: "Article userId can not be empty"
+        });
+      }
+    
+      if(!req.body.text) {
+        return res.status(400).send({
+            message: "Article text can not be empty"
+        });
+      }
+
+      // Create an article
+   
+      article.findOneAndUpdate({_id: req.params.articleId}, req.body, {new: true}).exec()
+      .then(article => {
+          res.send(article);
+        }).catch(err => {
+          res.status(500).send({
+              message: err.message || "Some error occurred while updating the article."
+          });
+        });
 };
