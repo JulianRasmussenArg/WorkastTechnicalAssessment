@@ -17,17 +17,17 @@ exports.create_user = function(req, res) {
   // Validate request
   if(!req.body.name) {
     return res.status(400).send({
-        message: "Note content can not be empty"
+        message: "User name can not be empty"
     });
   }
 
-  // Create a Note
+  // Create a user
   const user = new usersModel({
     name: req.body.name , 
     avatar: req.body.avatar
   });
 
-  // Save Note in the database
+  // Save user in the database
   user.save()
   .then(data => {
     res.send(data);

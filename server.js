@@ -5,6 +5,7 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   port = process.env.PORT || 3000,
   user = require('./app/models/user');
+  article = require('./app/models/article');
   
 mongoose.Promise = global.Promise;
 
