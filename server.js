@@ -1,9 +1,33 @@
-const express = require('express');
-const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
-const app = express();
+var express = require('express'),
+  app = express(),
+  dbConfig = require('./config/database.config.js'),
+  mongoose = require('mongoose'),
+  bodyParser = require('body-parser'),
+  port = process.env.PORT || 3000,
+  user = require('./app/models/user');
+  
+mongoose.Promise = global.Promise;
 
-// server port number
-app.set('port', process.env.PORT || 3000);
+// Connecting to the database
+mongoose.connect(dbConfig.url)
+.then(() => {
+    console.log("Successfully connected to the database");    
+}).catch(err => {
+    console.log('Could not connect to the database. Exiting now...');
+    process.exit();
+});
 
-require('./app/routes')(app, {});
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+var routes = require('./app/routes/node_routes'); //importing route
+routes(app); //register the route
+
+app.use(function(req, res) {
+    res.status(404).send({url: req.originalUrl + ' not found'})
+});
+
+app.listen(port);
+
+console.log('todo list RESTful API server started on: ' + port);
