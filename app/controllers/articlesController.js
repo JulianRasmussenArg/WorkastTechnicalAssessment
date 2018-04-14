@@ -53,7 +53,7 @@ exports.create_article = function(req, res) {
 
 };
 
-exports.get_articles_by_tag = function(req, res) {
+exports.get_articles_by_tag = function(req, res) {   
     var params = [req.params.tags].concat(req.params[0].split('/').slice(1));
     if(!params || params.length == 0) {
         return res.status(400).send({
@@ -61,7 +61,7 @@ exports.get_articles_by_tag = function(req, res) {
         });
       }
     
-    article.find({ tags: { $all: params } }).exec()
+    articlesModel.find({ tags: { $all: params } }).exec()
     .then(articles => {
         res.send(articles);
       }).catch(err => {
@@ -96,9 +96,15 @@ exports.update_article = function(req, res) {
         });
       }
    
-      article.findOneAndUpdate({_id: req.params.articleId}, req.body, {new: true}).exec()
-      .then(article => {
-          res.send(article);
+      articlesModel.findOneAndUpdate({_id: req.params.articleId}, req.body, {new: true}).exec()
+      .then(result => {
+          if (!result || result.n === 0) {
+            res.status(400).send({
+                message: "Article not found."
+            });
+          }
+          else
+            res.send(result);
         }).catch(err => {
           res.status(500).send({
               message: err.message || "Some error occurred while updating the article."
@@ -113,7 +119,7 @@ exports.delete_article = function(req, res) {
         });
       }
 
-    article.remove({_id: req.params.articleId}).exec()
+    articlesModel.remove({_id: req.params.articleId}).exec()
     .then(result => {
         if(result.n == 0 ){
             res.status(500).send({

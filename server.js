@@ -4,8 +4,9 @@ var express = require('express'),
   mongoose = require('mongoose'),
   bodyParser = require('body-parser'),
   port = process.env.PORT || 3000,
-  user = require('./app/models/user');
-  article = require('./app/models/article');
+  user = require('./app/models/user'),
+  article = require('./app/models/article'),
+  verifyToken = require('./app/auth/verifyToken');;
   
 mongoose.Promise = global.Promise;
 
@@ -21,6 +22,7 @@ mongoose.connect(dbConfig.url)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(verifyToken);
 
 var routes = require('./app/routes/node_routes'); //importing route
 routes(app); //register the route

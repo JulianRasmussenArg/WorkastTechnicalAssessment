@@ -23,6 +23,7 @@ exports.create_user = function(req, res) {
 
   // Create a user
   const user = new usersModel({
+    _id: mongoose.Types.ObjectId(),
     name: req.body.name , 
     avatar: req.body.avatar
   });
