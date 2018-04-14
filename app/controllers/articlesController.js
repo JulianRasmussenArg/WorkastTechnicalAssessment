@@ -95,8 +95,6 @@ exports.update_article = function(req, res) {
             message: "Article text can not be empty"
         });
       }
-
-      // Create an article
    
       article.findOneAndUpdate({_id: req.params.articleId}, req.body, {new: true}).exec()
       .then(article => {
@@ -107,3 +105,27 @@ exports.update_article = function(req, res) {
           });
         });
 };
+
+exports.delete_article = function(req, res) {
+    if(!req.params.articleId) {
+        return res.status(400).send({
+            message: "Article id can not by empty"
+        });
+      }
+
+    article.remove({_id: req.params.articleId}).exec()
+    .then(result => {
+        if(result.n == 0 ){
+            res.status(500).send({
+                message: "Article not found."
+            });
+        }
+        else{
+            res.status(200).send({message: 'Article successfully deleted'});
+        }
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while deleting the article."
+        });
+      });
+  };

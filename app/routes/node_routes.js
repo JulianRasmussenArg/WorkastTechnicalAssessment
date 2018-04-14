@@ -12,5 +12,6 @@ module.exports = function(app) {
     app.route('/article/(:tags)*')
         .get(articlesController.get_articles_by_tag)
     app.route('/article/:articleId')
-        .put(articlesController.update_article);
+        .put(articlesController.update_article)
+        .delete(articlesController.delete_article);
 }
