@@ -34,3 +34,5 @@ app.use(function(req, res) {
 app.listen(port);
 
 console.log('Workast technicall Assessment API server started on: ' + port);
+
+module.exports = app; // for testing
